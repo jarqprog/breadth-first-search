@@ -2,36 +2,27 @@ package com.codecool.bfsexample;
 
 import com.codecool.bfsexample.model.UserNode;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.util.List;
 
 public class BFSExample {
 
-    public static void populateDB(EntityManager em) {
+    public static List<UserNode> getUsers() {
 
-        RandomDataGenerator generator = new RandomDataGenerator();
-        List<UserNode> users = generator.generate();
+        RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
+        return randomDataGenerator.generate();
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        for (UserNode user : users) {
-            em.persist(user);
-        }
-        transaction.commit();
-
-        GraphPlotter.plot(users);
-        
-        System.out.println("Done!");
     }
 
     public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("bfsExampleUnit");
-        EntityManager em = emf.createEntityManager();
 
-        em.clear();
-        populateDB(em);
+        List<UserNode> nodes = getUsers();
+
+        nodes.forEach(System.out::println);
+
+        nodes.stream().filter(u -> u.getId() % 2 ==0)
+                .forEach(System.out::println);
+
+        GraphPlotter.plot(nodes);
+
     }
 }
