@@ -1,68 +1,92 @@
 package com.codecool.bfsexample.model;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Graph {
 
     private Map<UserNode, Set<UserNode>> adjacency = new HashMap<>();
+
+    public Graph() {}
+
+    public Graph(Collection<UserNode> users) {
+        users.forEach(this::addUser);
+    }
 
     public boolean addUser(UserNode user) {
         adjacency.put(user, user.getFriends());
         return true;
     }
 
-    public UserNode findUserById(int userId) {
+    public List<UserNode> shortestPath(UserNode first, UserNode second) {
+        List<UserNode> path = new LinkedList<>();
+        if (! adjacency.containsKey(first) || ! adjacency.containsKey(second) ) {
+            return path;
+        }
 
+        if (first == second) {
+            path.add(first);
+            return path;
+        }
 
-        return null;
+        Map<UserNode,UserNode> predecessors = new HashMap<>();
+        Set<UserNode> examined = new HashSet<>();
+        Queue<UserNode> queue = new ArrayDeque<>(first.getFriends());
 
+        UserNode friend = null;
+
+        while (! queue.isEmpty() ) {
+
+            friend = queue.poll();
+            examined.add(friend);
+
+            if (friend == null) {
+                return path;
+            }
+
+            if (friend == second) {
+                break;
+            }
+
+            for (UserNode user : friend.getFriends()) {
+                if (! examined.contains(user) ) {
+                    queue.add(user);
+                    predecessors.put(user, friend);
+                    examined.add(user);
+                }
+            }
+        }
+
+        if (friend != null && friend == second) {
+            examined.clear();
+
+            while (friend != first) {
+                if (friend == null) {
+                    break;
+                }
+
+                if (! examined.contains(friend) ) {
+                    path.add(0, friend);
+                    examined.add(friend);
+                }
+
+                UserNode temp = friend;
+                friend = predecessors.get(friend);
+                predecessors.remove(temp);
+            }
+        }
+        path.add(0, first);
+        return path;
     }
 
-    public int checkDistance(UserNode first, UserNode second) {
+    public int minimumDistance(UserNode first, UserNode second) {
 
-        // WIP
-        if (first.getId() == second.getId()) {
-            return 0;
+        int size = shortestPath(first, second).size();
+
+        if (size == 0) {
+            return -1;
         }
 
-        Set<UserNode> toCheck = new HashSet<>(first.getFriends());
-
-        if (toCheck.contains(second))  {
-            return 1;
-        }
-
-        Queue<UserNode> queue = new ArrayDeque<>(toCheck);
-        Set<UserNode> examined = new HashSet<>(toCheck);
-        Set<UserNode> checked = new HashSet<>();
-
-        UserNode currentUser;
-
-        int counter = 1;
-
-        while (! toCheck.isEmpty() ) {
-
-            toCheck.clear();
-
-            for (UserNode user : queue) {
-                toCheck.addAll(user.getFriends());
-            }
-
-            counter++;
-
-            if (toCheck.contains(second)) {
-                return counter;
-            }
-
-            while (! queue.isEmpty() ) {
-                currentUser = queue.poll();
-                toCheck.addAll(currentUser.getFriends());
-            }
-
-            queue.addAll(toCheck);
-        }
-
-        return -1;
+        return size - 1;
     }
 
     public Set<UserNode> getFriends(UserNode user, int distance) {
@@ -81,7 +105,6 @@ public class Graph {
 
         UserNode currentUser;
 
-
         for (int i=0; i<distance; i++) {
 
             queue.addAll(toAdd);
@@ -89,7 +112,9 @@ public class Graph {
 
             while (! queue.isEmpty() ) {
                 currentUser = queue.poll();
-                toAdd.addAll(currentUser.getFriends());
+                if (currentUser != null) {
+                    toAdd.addAll(currentUser.getFriends());
+                }
             }
             friends.addAll(toAdd);
         }

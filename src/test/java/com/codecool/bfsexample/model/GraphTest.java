@@ -34,11 +34,76 @@ public class GraphTest {
     }
 
     @Test
+    public void shortestPath_with_distance_between_same_user() {
+
+        List<UserNode> path = graph.shortestPath(jerry, jerry);
+
+        assertEquals(1, path.size());
+        assertTrue(path.contains(jerry));
+    }
+
+    @Test
+    public void shortestPath_if_no_user_in_graph() {
+
+        List<UserNode> path = graph.shortestPath(jerry, new UserNode(1020, "All", "B"));
+
+        assertEquals(0, path.size());
+    }
+
+    @Test
+    public void shortestPath_with_close_friends() {
+
+        List<UserNode> path = graph.shortestPath(jerry, hanna);
+
+        assertEquals(2, path.size());
+        assertTrue(path.contains(jerry));
+        assertTrue(path.contains(hanna));
+    }
+
+
+    @Test
+    public void shortestPath_with_distance_1() {
+
+        List<UserNode> path = graph.shortestPath(jerry, mark);
+
+        assertEquals(3, path.size());
+        assertTrue(path.contains(jerry));
+        assertTrue(path.contains(hanna));
+        assertTrue(path.contains(mark));
+    }
+
+
+    @Test
+    public void shortestPath_with_distance_2() {
+
+        List<UserNode> path = graph.shortestPath(jerry, filip);
+
+        assertEquals(4, path.size());
+        assertTrue(path.contains(jerry));
+        assertTrue(path.contains(hanna));
+        assertTrue(path.contains(mark));
+        assertTrue(path.contains(filip));
+    }
+
+    @Test
+    public void shortestPath_with_distance_3() {
+
+        List<UserNode> path = graph.shortestPath(jerry, ben);
+
+        assertEquals(5, path.size());
+        assertTrue(path.contains(jerry));
+        assertTrue(path.contains(hanna));
+        assertTrue(path.contains(mark));
+        assertTrue(path.contains(filip));
+        assertTrue(path.contains(ben));
+    }
+
+    @Test
     public void checkDistance_same_user() {
 
         int expected = 0;
 
-        int result = graph.checkDistance(jerry, jerry);
+        int result = graph.minimumDistance(jerry, jerry);
 
         assertEquals(expected, result);
     }
@@ -49,7 +114,7 @@ public class GraphTest {
 
         int expected = -1;
 
-        int result = graph.checkDistance(jerry, new UserNode(20, "Dan", "Martin"));
+        int result = graph.minimumDistance(jerry, new UserNode(20, "Dan", "Martin"));
 
         assertEquals(expected, result);
     }
@@ -59,7 +124,7 @@ public class GraphTest {
 
         int expected = 1;
 
-        int result = graph.checkDistance(jerry, hanna);
+        int result = graph.minimumDistance(jerry, hanna);
 
         assertEquals(expected, result);
     }
@@ -70,7 +135,7 @@ public class GraphTest {
 
         int expected = 2;
 
-        int result = graph.checkDistance(jerry, mark);
+        int result = graph.minimumDistance(jerry, mark);
 
         assertEquals(expected, result);
     }
@@ -80,7 +145,7 @@ public class GraphTest {
 
         int expected = 3;
 
-        int result = graph.checkDistance(jerry, filip);
+        int result = graph.minimumDistance(jerry, filip);
 
         assertEquals(expected, result);
     }
@@ -90,7 +155,7 @@ public class GraphTest {
 
         int expected = 4;
 
-        int result = graph.checkDistance(jerry, han);
+        int result = graph.minimumDistance(jerry, han);
 
         assertEquals(expected, result);
     }
