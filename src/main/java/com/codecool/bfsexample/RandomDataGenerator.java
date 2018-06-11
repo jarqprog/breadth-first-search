@@ -8,6 +8,8 @@ import java.util.Random;
 
 public class RandomDataGenerator {
 
+    private int currentId;
+
     private Random rng = new Random(1234);
     private String[] firstNames = {
             "Inez", "Emery", "Virginia", "Charissa", "Tyrone", "Ayanna", "Jena", "Ora",
@@ -49,7 +51,9 @@ public class RandomDataGenerator {
     }
 
     private UserNode genNewUser() {
-        return new UserNode(getRandomElement(firstNames), getRandomElement(lastNames));
+        UserNode user = new UserNode(getRandomElement(firstNames), getRandomElement(lastNames));
+        user.setId(currentId++);
+        return user;
     }
 
     private String getRandomElement(String[] array) {

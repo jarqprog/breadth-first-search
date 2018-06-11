@@ -27,6 +27,12 @@ public class UserNode {
         this.lastName = lastName;
     }
 
+    public UserNode(int id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public long getId() {
         return id;
     }
@@ -56,5 +62,11 @@ public class UserNode {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+
+        return String.format("Id: %s; name: %s %s", id, firstName, lastName);
     }
 }

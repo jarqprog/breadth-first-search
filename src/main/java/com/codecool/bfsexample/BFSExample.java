@@ -1,37 +1,38 @@
 package com.codecool.bfsexample;
 
+import com.codecool.bfsexample.model.Graph;
 import com.codecool.bfsexample.model.UserNode;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.util.List;
 
 public class BFSExample {
 
-    public static void populateDB(EntityManager em) {
+    public static List<UserNode> getUsers() {
 
-        RandomDataGenerator generator = new RandomDataGenerator();
-        List<UserNode> users = generator.generate();
+        RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
+        return randomDataGenerator.generate();
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        for (UserNode user : users) {
-            em.persist(user);
-        }
-        transaction.commit();
-
-        GraphPlotter.plot(users);
-        
-        System.out.println("Done!");
     }
 
     public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("bfsExampleUnit");
-        EntityManager em = emf.createEntityManager();
+        
+        List<UserNode> nodes = getUsers();
 
-        em.clear();
-        populateDB(em);
+        Graph graph = new Graph(nodes);
+        GraphPlotter.plot(nodes);
+
+        int len = nodes.size();
+
+        for (int i=1; i<len; i++) {
+            if (i > len / 2 - 2) {
+                break;
+            }
+
+            UserNode first = nodes.get(i);
+            UserNode second = nodes.get(len-i);
+            System.out.println("Shortest path between: " + first + " & " + second + ":");
+            System.out.println(graph.shortestPath(first, second));
+            i++;
+        }
     }
 }
