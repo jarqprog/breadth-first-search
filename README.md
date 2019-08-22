@@ -1,3 +1,1 @@
-# BFS-JavaEE
-
-See instructions in Canvas
+# BFS- graphs excersises
